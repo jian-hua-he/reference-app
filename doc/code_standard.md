@@ -11,8 +11,8 @@
 │
 ├── internal/
 │   ├── adapter/ # to adapte cli or http input
-│   ├── repo/    # data access, it could be database, http or memory store
-│   └── app/     # Business rules
+│   ├── repository/    # data access, it could be database, http or memory store
+│   └── service/     # Business rules
 │
 ├── pkg/
 │
@@ -22,9 +22,12 @@
 
 - Add dependency in consumer side, name it as `dependency.go`
 - Use uber gomock to generate mock `dependency_mock.go` in the same place with `dependency.go`
-- Mapping test if possible
-- Put the struct in `struct.go` file
+- Test should use map test if possible
+- Put the struct in `struct.go` file, error in `error.go`
+- In most case, return pointer not struct
+- Test files package name always with `_test` suffix
 
 ## Do not
 
 - Use the name like `NoteDTO`. The struct name should be represent the idea of layer or domain. e.g. `HttpNoteResponse`, `DBNote`
+- Avoid return interface
