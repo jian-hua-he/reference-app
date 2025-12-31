@@ -28,15 +28,15 @@ func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, er
 	}, nil
 }
 
-func (s *NoteService) List(ctx context.Context) ([]*ServiceNote, error) {
+func (s *NoteService) List(ctx context.Context) ([]ServiceNote, error) {
 	ns, err := s.repo.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	out := make([]*ServiceNote, 0, len(ns))
+	out := make([]ServiceNote, 0, len(ns))
 	for _, n := range ns {
-		out = append(out, &ServiceNote{
+		out = append(out, ServiceNote{
 			ID:        n.ID,
 			Text:      n.Text,
 			CreatedAt: n.CreatedAt,
