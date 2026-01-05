@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	repository "github.com/jian-hua-he/ddd_notes/internal/repository"
+	note "github.com/jian-hua-he/ddd_notes/internal/repository/note"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,10 +42,10 @@ func (m *MockNoteRepository) EXPECT() *MockNoteRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockNoteRepository) Create(ctx context.Context, text string) (*repository.RepoNote, error) {
+func (m *MockNoteRepository) Create(ctx context.Context, text string) (*note.RepoNote, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, text)
-	ret0, _ := ret[0].(*repository.RepoNote)
+	ret0, _ := ret[0].(*note.RepoNote)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -71,10 +71,10 @@ func (mr *MockNoteRepositoryMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockNoteRepository) List(ctx context.Context) ([]repository.RepoNote, error) {
+func (m *MockNoteRepository) List(ctx context.Context) ([]note.RepoNote, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].([]repository.RepoNote)
+	ret0, _ := ret[0].([]note.RepoNote)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

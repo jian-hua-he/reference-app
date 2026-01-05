@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
+	"github.com/jian-hua-he/ddd_notes/internal/repository/note"
 	"github.com/jian-hua-he/ddd_notes/internal/service"
 
 	"github.com/stretchr/testify/assert"
@@ -13,7 +14,7 @@ import (
 
 func TestNoteService_List(t *testing.T) {
 	testCases := map[string]struct {
-		MockListReturnNotes []repository.RepoNote
+		MockListReturnNotes []note.RepoNote
 		MockListReturnErr   error
 		MockListCallTimes   int
 
@@ -21,7 +22,7 @@ func TestNoteService_List(t *testing.T) {
 		WantErr error
 	}{
 		"successful": {
-			MockListReturnNotes: []repository.RepoNote{
+			MockListReturnNotes: []note.RepoNote{
 				{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
 				{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
 			},
@@ -65,7 +66,7 @@ func TestNoteService_Create(t *testing.T) {
 	testCases := map[string]struct {
 		Input string
 
-		MockCreateReturn    *repository.RepoNote
+		MockCreateReturn    *note.RepoNote
 		MockCreateReturnErr error
 		MockCreateCallTimes int
 
@@ -75,7 +76,7 @@ func TestNoteService_Create(t *testing.T) {
 		"passes text with space": {
 			Input: "  hello  ",
 
-			MockCreateReturn: &repository.RepoNote{
+			MockCreateReturn: &note.RepoNote{
 				ID:        "id-1",
 				Text:      "  hello  ",
 				CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
@@ -91,7 +92,7 @@ func TestNoteService_Create(t *testing.T) {
 		"pass empty text": {
 			Input: "",
 
-			MockCreateReturn: &repository.RepoNote{
+			MockCreateReturn: &note.RepoNote{
 				ID:        "id-2",
 				Text:      "",
 				CreatedAt: time.Unix(20, 0).UTC(),

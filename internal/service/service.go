@@ -19,7 +19,7 @@ func NewNoteService(repo NoteRepository) *NoteService {
 func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, error) {
 	n, err := s.repo.Create(ctx, text)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create a note, %w", err)
+		return nil, fmt.Errorf("failed to create a note: %w", err)
 	}
 
 	return &ServiceNote{
@@ -32,7 +32,7 @@ func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, er
 func (s *NoteService) List(ctx context.Context) ([]ServiceNote, error) {
 	ns, err := s.repo.List(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list all notes", err)
+		return nil, fmt.Errorf("failed to list all notes: %w", err)
 	}
 
 	out := make([]ServiceNote, 0, len(ns))

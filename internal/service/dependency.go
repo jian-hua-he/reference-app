@@ -4,11 +4,11 @@ package service
 import (
 	"context"
 
-	"github.com/jian-hua-he/ddd_notes/internal/repository"
+	"github.com/jian-hua-he/ddd_notes/internal/repository/note"
 )
 
 type NoteRepository interface {
-	List(ctx context.Context) ([]repository.RepoNote, error)
-	Create(ctx context.Context, text string) (*repository.RepoNote, error)
+	List(ctx context.Context) ([]note.RepoNote, error)
+	Create(ctx context.Context, text string) (*note.RepoNote, error)
 	Delete(ctx context.Context, id string) error
 }
