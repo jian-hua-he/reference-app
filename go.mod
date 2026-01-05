@@ -3,6 +3,7 @@ module github.com/jian-hua-he/ddd_notes
 go 1.25.1
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/mock v0.6.0
 )
