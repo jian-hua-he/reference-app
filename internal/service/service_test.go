@@ -12,40 +12,35 @@ import (
 )
 
 func TestNoteService_List(t *testing.T) {
-	t.Parallel()
+	testCases := map[string]struct {
+		MockListReturnNotes []repository.RepoNote
+		MockListReturnErr   error
+		MockListCallTimes   int
 
-	type want struct {
-		errIs error
-		notes []service.ServiceNote
-	}
-	cases := map[string]struct {
-		repoNotes []repository.RepoNote
-		repoErr   error
-		want      want
+		Want    []service.ServiceNote
+		WantErr error
 	}{
-		"ok maps repo notes to service notes": {
-			repoNotes: []repository.RepoNote{
+		"successful": {
+			MockListReturnNotes: []repository.RepoNote{
 				{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
 				{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
 			},
-			want: want{
-				errIs: nil,
-				notes: []service.ServiceNote{
-					{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
-					{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
-				},
+			MockListCallTimes: 1,
+
+			Want: []service.ServiceNote{
+				{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
+				{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
 			},
 		},
-		"repo error bubbles up": {
-			repoErr: assert.AnError,
-			want: want{
-				errIs: assert.AnError,
-				notes: nil,
-			},
+		"repo error": {
+			MockListReturnErr: assert.AnError,
+			MockListCallTimes: 1,
+
+			WantErr: assert.AnError,
 		},
 	}
 
-	for name, tc := range cases {
+	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -55,76 +50,71 @@ func TestNoteService_List(t *testing.T) {
 
 			repo.EXPECT().
 				List(gomock.Any()).
-				Return(tc.repoNotes, tc.repoErr).
+				Return(tc.MockListReturnNotes, tc.MockListReturnErr).
 				Times(1)
 
 			got, err := svc.List(t.Context())
 
-			assert.ErrorIs(t, err, tc.want.errIs)
-			assert.Equal(t, tc.want.notes, got)
+			assert.ErrorIs(t, err, tc.WantErr)
+			assert.Equal(t, tc.Want, got)
 		})
 	}
 }
 
 func TestNoteService_Create(t *testing.T) {
-	t.Parallel()
+	testCases := map[string]struct {
+		Input string
 
-	type want struct {
-		errIs error
-		note  *service.ServiceNote
-	}
+		MockCreateReturn    *repository.RepoNote
+		MockCreateReturnErr error
+		MockCreateCallTimes int
 
-	cases := map[string]struct {
-		inputText string
-
-		repoReturn *repository.RepoNote
-		repoErr    error
-
-		want want
+		Want    *service.ServiceNote
+		WantErr error
 	}{
-		"ok passes text through as-is": {
-			inputText: "  hello  ",
-			repoReturn: &repository.RepoNote{
+		"passes text with space": {
+			Input: "  hello  ",
+
+			MockCreateReturn: &repository.RepoNote{
 				ID:        "id-1",
 				Text:      "  hello  ",
 				CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
 			},
-			want: want{
-				errIs: nil,
-				note: &service.ServiceNote{
-					ID:        "id-1",
-					Text:      "  hello  ",
-					CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
-				},
+			MockCreateCallTimes: 1,
+
+			Want: &service.ServiceNote{
+				ID:        "id-1",
+				Text:      "  hello  ",
+				CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
 			},
 		},
-		"ok allows empty text (no validation in MVP)": {
-			inputText: "",
-			repoReturn: &repository.RepoNote{
+		"pass empty text": {
+			Input: "",
+
+			MockCreateReturn: &repository.RepoNote{
 				ID:        "id-2",
 				Text:      "",
 				CreatedAt: time.Unix(20, 0).UTC(),
 			},
-			want: want{
-				errIs: nil,
-				note: &service.ServiceNote{
-					ID:        "id-2",
-					Text:      "",
-					CreatedAt: time.Unix(20, 0).UTC(),
-				},
+			MockCreateCallTimes: 1,
+
+			Want: &service.ServiceNote{
+				ID:        "id-2",
+				Text:      "",
+				CreatedAt: time.Unix(20, 0).UTC(),
 			},
 		},
-		"repo error bubbles up": {
-			inputText: "x",
-			repoErr:   assert.AnError,
-			want: want{
-				errIs: assert.AnError,
-				note:  nil,
-			},
+		"repo error": {
+			Input: "x",
+
+			MockCreateReturnErr: assert.AnError,
+			MockCreateCallTimes: 1,
+
+			WantErr: assert.AnError,
 		},
 	}
 
-	for name, tc := range cases {
+	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -133,50 +123,51 @@ func TestNoteService_Create(t *testing.T) {
 			svc := service.NewNoteService(repo)
 
 			repo.EXPECT().
-				Create(gomock.Any(), tc.inputText).
-				Return(tc.repoReturn, tc.repoErr).
+				Create(gomock.Any(), tc.Input).
+				Return(tc.MockCreateReturn, tc.MockCreateReturnErr).
 				Times(1)
 
-			got, err := svc.Create(t.Context(), tc.inputText)
+			got, err := svc.Create(t.Context(), tc.Input)
 
-			assert.ErrorIs(t, err, tc.want.errIs)
-			assert.Equal(t, tc.want.note, got)
+			assert.ErrorIs(t, err, tc.WantErr)
+			assert.Equal(t, tc.Want, got)
 		})
 	}
 }
 
 func TestNoteService_Delete(t *testing.T) {
-	t.Parallel()
+	testCases := map[string]struct {
+		InputID string
 
-	cases := map[string]struct {
-		inputID string
+		MockDeleteErr       error
+		MockDeleteCallTimes int
 
-		repoErr error
-		wantErr error
+		WantErr error
 	}{
-		"ok": {
-			inputID: "1",
-			repoErr: nil,
-			wantErr: nil,
+		"successful": {
+			InputID: "1",
+
+			MockDeleteCallTimes: 1,
 		},
-		"maps repo not found to service not found": {
-			inputID: "404",
-			repoErr: repository.ErrNotFound,
-			wantErr: service.ErrNotFound,
+		"note not found": {
+			InputID: "404",
+
+			MockDeleteErr:       repository.ErrNotFound,
+			MockDeleteCallTimes: 1,
+
+			WantErr: service.ErrNotFound,
 		},
-		"repo error bubbles up": {
-			inputID: "x",
-			repoErr: assert.AnError,
-			wantErr: assert.AnError,
-		},
-		"ok allows empty id (no validation in MVP)": {
-			inputID: "",
-			repoErr: nil,
-			wantErr: nil,
+		"repo error": {
+			InputID: "x",
+
+			MockDeleteErr:       assert.AnError,
+			MockDeleteCallTimes: 1,
+
+			WantErr: assert.AnError,
 		},
 	}
 
-	for name, tc := range cases {
+	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -185,12 +176,12 @@ func TestNoteService_Delete(t *testing.T) {
 			svc := service.NewNoteService(repo)
 
 			repo.EXPECT().
-				Delete(gomock.Any(), tc.inputID).
-				Return(tc.repoErr).
+				Delete(gomock.Any(), tc.InputID).
+				Return(tc.MockDeleteErr).
 				Times(1)
 
-			err := svc.Delete(t.Context(), tc.inputID)
-			assert.ErrorIs(t, err, tc.wantErr)
+			err := svc.Delete(t.Context(), tc.InputID)
+			assert.ErrorIs(t, err, tc.WantErr)
 		})
 	}
 }

@@ -3,6 +3,5 @@ package service
 import "errors"
 
 var (
-	ErrValidation = errors.New("service: validation error")
-	ErrNotFound   = errors.New("service: not found")
+	ErrNotFound = errors.New("service: not found")
 )

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
 )
@@ -18,7 +19,7 @@ func NewNoteService(repo NoteRepository) *NoteService {
 func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, error) {
 	n, err := s.repo.Create(ctx, text)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create a note, %w", err)
 	}
 
 	return &ServiceNote{
@@ -31,7 +32,7 @@ func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, er
 func (s *NoteService) List(ctx context.Context) ([]ServiceNote, error) {
 	ns, err := s.repo.List(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to list all notes", err)
 	}
 
 	out := make([]ServiceNote, 0, len(ns))
@@ -48,12 +49,13 @@ func (s *NoteService) List(ctx context.Context) ([]ServiceNote, error) {
 
 func (s *NoteService) Delete(ctx context.Context, id string) error {
 	err := s.repo.Delete(ctx, id)
-	if err == nil {
-		return nil
-	}
 	if errors.Is(err, repository.ErrNotFound) {
 		return ErrNotFound
 	}
 
-	return err
+	if err != nil {
+		return fmt.Errorf("failed to delete note: %w", err)
+	}
+
+	return nil
 }

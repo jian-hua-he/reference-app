@@ -8,7 +8,7 @@ import (
 )
 
 type NoteRepository interface {
-	Create(ctx context.Context, text string) (*repository.RepoNote, error)
 	List(ctx context.Context) ([]repository.RepoNote, error)
+	Create(ctx context.Context, text string) (*repository.RepoNote, error)
 	Delete(ctx context.Context, id string) error
 }
