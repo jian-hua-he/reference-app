@@ -1,3 +1,3 @@
-# Notes App
+# Reference application
 
-The simple note app for AI agent to reference the coding style
+The simple app for AI agent to reference the coding style
