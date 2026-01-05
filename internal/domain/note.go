@@ -1,8 +1,8 @@
-package service
+package domain
 
 import "time"
 
-type ServiceNote struct {
+type Note struct {
 	ID        string
 	Text      string
 	CreatedAt time.Time

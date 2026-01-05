@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jian-hua-he/ddd_notes/internal/domain"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
 )
 
@@ -16,35 +17,35 @@ func NewNoteService(repo NoteRepository) *NoteService {
 	return &NoteService{repo: repo}
 }
 
-func (s *NoteService) Create(ctx context.Context, text string) (*ServiceNote, error) {
+func (s *NoteService) Create(ctx context.Context, text string) (*domain.Note, error) {
 	n, err := s.repo.Create(ctx, text)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a note: %w", err)
 	}
 
-	return &ServiceNote{
+	return &domain.Note{
 		ID:        n.ID,
 		Text:      n.Text,
 		CreatedAt: n.CreatedAt,
 	}, nil
 }
 
-func (s *NoteService) List(ctx context.Context) ([]ServiceNote, error) {
-	ns, err := s.repo.List(ctx)
+func (s *NoteService) List(ctx context.Context) ([]domain.Note, error) {
+	notes, err := s.repo.List(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list all notes: %w", err)
 	}
 
-	out := make([]ServiceNote, 0, len(ns))
-	for _, n := range ns {
-		out = append(out, ServiceNote{
+	result := make([]domain.Note, 0, len(notes))
+	for _, n := range notes {
+		result = append(result, domain.Note{
 			ID:        n.ID,
 			Text:      n.Text,
 			CreatedAt: n.CreatedAt,
 		})
 	}
 
-	return out, nil
+	return result, nil
 }
 
 func (s *NoteService) Delete(ctx context.Context, id string) error {

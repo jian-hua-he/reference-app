@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jian-hua-he/ddd_notes/internal/domain"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
-	"github.com/jian-hua-he/ddd_notes/internal/repository/note"
 	"github.com/jian-hua-he/ddd_notes/internal/service"
 
 	"github.com/stretchr/testify/assert"
@@ -14,21 +14,21 @@ import (
 
 func TestNoteService_List(t *testing.T) {
 	testCases := map[string]struct {
-		MockListReturnNotes []note.RepoNote
+		MockListReturnNotes []domain.Note
 		MockListReturnErr   error
 		MockListCallTimes   int
 
-		Want    []service.ServiceNote
+		Want    []domain.Note
 		WantErr error
 	}{
 		"successful": {
-			MockListReturnNotes: []note.RepoNote{
+			MockListReturnNotes: []domain.Note{
 				{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
 				{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
 			},
 			MockListCallTimes: 1,
 
-			Want: []service.ServiceNote{
+			Want: []domain.Note{
 				{ID: "1", Text: "a", CreatedAt: time.Unix(10, 0).UTC()},
 				{ID: "2", Text: "b", CreatedAt: time.Unix(20, 0).UTC()},
 			},
@@ -66,24 +66,24 @@ func TestNoteService_Create(t *testing.T) {
 	testCases := map[string]struct {
 		Input string
 
-		MockCreateReturn    *note.RepoNote
+		MockCreateReturn    *domain.Note
 		MockCreateReturnErr error
 		MockCreateCallTimes int
 
-		Want    *service.ServiceNote
+		Want    *domain.Note
 		WantErr error
 	}{
 		"passes text with space": {
 			Input: "  hello  ",
 
-			MockCreateReturn: &note.RepoNote{
+			MockCreateReturn: &domain.Note{
 				ID:        "id-1",
 				Text:      "  hello  ",
 				CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
 			},
 			MockCreateCallTimes: 1,
 
-			Want: &service.ServiceNote{
+			Want: &domain.Note{
 				ID:        "id-1",
 				Text:      "  hello  ",
 				CreatedAt: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
@@ -92,14 +92,14 @@ func TestNoteService_Create(t *testing.T) {
 		"pass empty text": {
 			Input: "",
 
-			MockCreateReturn: &note.RepoNote{
+			MockCreateReturn: &domain.Note{
 				ID:        "id-2",
 				Text:      "",
 				CreatedAt: time.Unix(20, 0).UTC(),
 			},
 			MockCreateCallTimes: 1,
 
-			Want: &service.ServiceNote{
+			Want: &domain.Note{
 				ID:        "id-2",
 				Text:      "",
 				CreatedAt: time.Unix(20, 0).UTC(),
