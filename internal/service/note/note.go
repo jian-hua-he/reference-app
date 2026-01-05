@@ -1,4 +1,4 @@
-package service
+package note
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 
 	"github.com/jian-hua-he/ddd_notes/internal/domain"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
+	"github.com/jian-hua-he/ddd_notes/internal/service"
 )
 
 type NoteService struct {
@@ -51,7 +52,7 @@ func (s *NoteService) List(ctx context.Context) ([]domain.Note, error) {
 func (s *NoteService) Delete(ctx context.Context, id string) error {
 	err := s.repo.Delete(ctx, id)
 	if errors.Is(err, repository.ErrNotFound) {
-		return ErrNotFound
+		return service.ErrNotFound
 	}
 
 	if err != nil {

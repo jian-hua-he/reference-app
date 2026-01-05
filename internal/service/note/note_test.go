@@ -1,4 +1,4 @@
-package service_test
+package note_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/jian-hua-he/ddd_notes/internal/domain"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
 	"github.com/jian-hua-he/ddd_notes/internal/service"
+	"github.com/jian-hua-he/ddd_notes/internal/service/note"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -46,8 +47,8 @@ func TestNoteService_List(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := service.NewMockNoteRepository(ctrl)
-			svc := service.NewNoteService(repo)
+			repo := note.NewMockNoteRepository(ctrl)
+			svc := note.NewNoteService(repo)
 
 			repo.EXPECT().
 				List(gomock.Any()).
@@ -120,8 +121,8 @@ func TestNoteService_Create(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := service.NewMockNoteRepository(ctrl)
-			svc := service.NewNoteService(repo)
+			repo := note.NewMockNoteRepository(ctrl)
+			svc := note.NewNoteService(repo)
 
 			repo.EXPECT().
 				Create(gomock.Any(), tc.Input).
@@ -173,8 +174,8 @@ func TestNoteService_Delete(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := service.NewMockNoteRepository(ctrl)
-			svc := service.NewNoteService(repo)
+			repo := note.NewMockNoteRepository(ctrl)
+			svc := note.NewNoteService(repo)
 
 			repo.EXPECT().
 				Delete(gomock.Any(), tc.InputID).

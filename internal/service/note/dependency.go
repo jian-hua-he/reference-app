@@ -1,5 +1,5 @@
-//go:generate mockgen -source=dependency.go -destination=dependency_mock.go -package=service
-package service
+//go:generate mockgen -source=dependency.go -destination=dependency_mock.go -package=note
+package note
 
 import (
 	"context"
