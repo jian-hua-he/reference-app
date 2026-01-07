@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/domain"
+	"github.com/jian-hua-he/ddd_notes/internal/entity"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
 )
 
@@ -38,7 +38,7 @@ func NewRepoWithNotes(
 	}
 }
 
-func (r *Repo) Create(ctx context.Context, text string) (*domain.Note, error) {
+func (r *Repo) Create(ctx context.Context, text string) (*entity.Note, error) {
 	id := r.uuidFunc()
 	createdAt := r.nowFunc()
 
@@ -49,22 +49,22 @@ func (r *Repo) Create(ctx context.Context, text string) (*domain.Note, error) {
 
 	r.notes[id] = note
 
-	return &domain.Note{
+	return &entity.Note{
 		ID:        id,
 		Text:      text,
 		CreatedAt: createdAt,
 	}, nil
 }
 
-func (r *Repo) List(ctx context.Context) ([]domain.Note, error) {
-	var result []domain.Note
+func (r *Repo) List(ctx context.Context) ([]entity.Note, error) {
+	var result []entity.Note
 
 	if len(r.notes) == 0 {
-		return []domain.Note{}, nil
+		return []entity.Note{}, nil
 	}
 
 	for id, note := range r.notes {
-		result = append(result, domain.Note{
+		result = append(result, entity.Note{
 			ID:        id,
 			Text:      note.Text,
 			CreatedAt: note.CreatedAt,

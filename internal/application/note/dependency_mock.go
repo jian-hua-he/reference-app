@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	domain "github.com/jian-hua-he/ddd_notes/internal/domain"
+	entity "github.com/jian-hua-he/ddd_notes/internal/entity"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,10 +42,10 @@ func (m *MockNoteRepository) EXPECT() *MockNoteRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockNoteRepository) Create(ctx context.Context, text string) (*domain.Note, error) {
+func (m *MockNoteRepository) Create(ctx context.Context, text string) (*entity.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, text)
-	ret0, _ := ret[0].(*domain.Note)
+	ret0, _ := ret[0].(*entity.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -71,10 +71,10 @@ func (mr *MockNoteRepositoryMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockNoteRepository) List(ctx context.Context) ([]domain.Note, error) {
+func (m *MockNoteRepository) List(ctx context.Context) ([]entity.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].([]domain.Note)
+	ret0, _ := ret[0].([]entity.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

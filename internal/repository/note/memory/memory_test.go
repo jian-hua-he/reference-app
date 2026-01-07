@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/domain"
+	"github.com/jian-hua-he/ddd_notes/internal/entity"
 	"github.com/jian-hua-he/ddd_notes/internal/repository"
 	"github.com/jian-hua-he/ddd_notes/internal/repository/note/memory"
 	"github.com/jian-hua-he/ddd_notes/internal/test"
@@ -17,19 +17,19 @@ func TestMemoryRepo_List(t *testing.T) {
 	testCases := map[string]struct {
 		InitialNotes map[string]memory.Note
 
-		Want    []domain.Note
+		Want    []entity.Note
 		WantErr error
 	}{
 		"empty list": {
 			InitialNotes: map[string]memory.Note{},
-			Want:         []domain.Note{},
+			Want:         []entity.Note{},
 		},
 		"list with notes": {
 			InitialNotes: map[string]memory.Note{
 				"1": {Text: "note 1", CreatedAt: time.Unix(10, 0).UTC()},
 				"2": {Text: "note 2", CreatedAt: time.Unix(20, 0).UTC()},
 			},
-			Want: []domain.Note{
+			Want: []entity.Note{
 				{ID: "1", Text: "note 1", CreatedAt: time.Unix(10, 0).UTC()},
 				{ID: "2", Text: "note 2", CreatedAt: time.Unix(20, 0).UTC()},
 			},
@@ -58,19 +58,19 @@ func TestMemoryRepo_Create(t *testing.T) {
 
 		InitialNotes map[string]memory.Note
 
-		Want         *domain.Note
-		WantAllNotes []domain.Note
+		Want         *entity.Note
+		WantAllNotes []entity.Note
 		WantErr      error
 	}{
 		"create note with text": {
 			Input: "hello world",
 
-			Want: &domain.Note{
+			Want: &entity.Note{
 				ID:        "fake-uuid-1234",
 				Text:      "hello world",
 				CreatedAt: time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC),
 			},
-			WantAllNotes: []domain.Note{
+			WantAllNotes: []entity.Note{
 				{
 					ID:        "fake-uuid-1234",
 					Text:      "hello world",
@@ -81,12 +81,12 @@ func TestMemoryRepo_Create(t *testing.T) {
 		"create note with spaces": {
 			Input: "  spaced text  ",
 
-			Want: &domain.Note{
+			Want: &entity.Note{
 				ID:        "fake-uuid-1234",
 				Text:      "  spaced text  ",
 				CreatedAt: time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC),
 			},
-			WantAllNotes: []domain.Note{
+			WantAllNotes: []entity.Note{
 				{
 					ID:        "fake-uuid-1234",
 					Text:      "  spaced text  ",
@@ -108,12 +108,12 @@ func TestMemoryRepo_Create(t *testing.T) {
 				},
 			},
 
-			Want: &domain.Note{
+			Want: &entity.Note{
 				ID:        "fake-uuid-1234",
 				Text:      "",
 				CreatedAt: time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC),
 			},
-			WantAllNotes: []domain.Note{
+			WantAllNotes: []entity.Note{
 				{
 					ID:        "1",
 					Text:      "Foo",
@@ -157,7 +157,7 @@ func TestMemoryRepo_Delete(t *testing.T) {
 		InitialNotes map[string]memory.Note
 		InputID      string
 
-		Want    []domain.Note
+		Want    []entity.Note
 		WantErr error
 	}{
 		"delete existing note": {
@@ -177,7 +177,7 @@ func TestMemoryRepo_Delete(t *testing.T) {
 				},
 			},
 
-			Want: []domain.Note{
+			Want: []entity.Note{
 				{
 					ID:        "2",
 					Text:      "to keep",
@@ -207,7 +207,7 @@ func TestMemoryRepo_Delete(t *testing.T) {
 				},
 			},
 
-			Want: []domain.Note{
+			Want: []entity.Note{
 				{
 					ID:        "1",
 					Text:      "to delete",
