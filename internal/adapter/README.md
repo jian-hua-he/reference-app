@@ -12,7 +12,7 @@ This layer contains adapters that convert external requests (HTTP, gRPC, CLI, et
 ## Structure
 
 Each adapter typically handles one protocol or interface type. For example:
-- `http/` - HTTP REST endpoints
+- `web/` - HTTP REST endpoints
 - `grpc/` - gRPC service definitions
 - `cli/` - Command-line interface handlers
 - `kafka/` - Kafka message

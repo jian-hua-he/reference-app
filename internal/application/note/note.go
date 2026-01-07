@@ -18,19 +18,6 @@ func NewNoteApp(repo NoteRepository) *NoteApp {
 	return &NoteApp{repo: repo}
 }
 
-func (s *NoteApp) Create(ctx context.Context, text string) (*entity.Note, error) {
-	n, err := s.repo.Create(ctx, text)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create a note: %w", err)
-	}
-
-	return &entity.Note{
-		ID:        n.ID,
-		Text:      n.Text,
-		CreatedAt: n.CreatedAt,
-	}, nil
-}
-
 func (s *NoteApp) List(ctx context.Context) ([]entity.Note, error) {
 	notes, err := s.repo.List(ctx)
 	if err != nil {
@@ -47,6 +34,19 @@ func (s *NoteApp) List(ctx context.Context) ([]entity.Note, error) {
 	}
 
 	return result, nil
+}
+
+func (s *NoteApp) Create(ctx context.Context, text string) (*entity.Note, error) {
+	n, err := s.repo.Create(ctx, text)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a note: %w", err)
+	}
+
+	return &entity.Note{
+		ID:        n.ID,
+		Text:      n.Text,
+		CreatedAt: n.CreatedAt,
+	}, nil
 }
 
 func (s *NoteApp) Delete(ctx context.Context, id string) error {
