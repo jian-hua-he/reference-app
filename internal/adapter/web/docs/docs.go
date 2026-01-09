@@ -32,7 +32,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.ListNoteResponse"
+                            "$ref": "#/definitions/web.GetNotesResponse"
                         }
                     },
                     "500": {
@@ -54,7 +54,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.ListNoteResponse": {
+        "web.GetNotesResponse": {
             "type": "object",
             "properties": {
                 "message": {

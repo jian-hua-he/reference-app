@@ -5,7 +5,7 @@ definitions:
       message:
         type: string
     type: object
-  web.ListNoteResponse:
+  web.GetNotesResponse:
     properties:
       message:
         type: string
@@ -40,7 +40,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.ListNoteResponse'
+            $ref: '#/definitions/web.GetNotesResponse'
         "500":
           description: Internal Server Error
           schema:
