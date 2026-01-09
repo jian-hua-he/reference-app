@@ -1,0 +1,51 @@
+basePath: /app
+definitions:
+  web.ErrResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  web.ListNoteResponse:
+    properties:
+      message:
+        type: string
+      payload:
+        items:
+          $ref: '#/definitions/web.Note'
+        type: array
+    type: object
+  web.Note:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a sample server for a App application.
+  title: App API
+  version: "1.0"
+paths:
+  /v1/notes:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all notes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ListNoteResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrResponse'
+      summary: List Notes
+      tags:
+      - v1
+swagger: "2.0"

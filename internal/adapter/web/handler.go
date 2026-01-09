@@ -16,6 +16,16 @@ func NewHandler(noteApp NoteApp) *Handler {
 	}
 }
 
+// ListNotes
+//
+// @Summary List Notes
+// @Description Get a list of all notes
+// @Tags v1
+// @Accept json
+// @Produce json
+// @Success 200 {object} ListNoteResponse
+// @Failure 500 {object} ErrResponse
+// @Router /v1/notes [GET]
 func (h *Handler) ListNotes(c echo.Context) error {
 	notes, err := h.noteApp.List(c.Request().Context())
 	if err != nil {

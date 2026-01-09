@@ -81,9 +81,9 @@ func TestHandler_List(t *testing.T) {
 			handler := web.NewHandler(app)
 
 			e := echo.New()
-			e.GET(web.NoteListRoute, handler.ListNotes)
+			e.GET(web.UrlPathNoteList, handler.ListNotes)
 
-			req := httptest.NewRequest(http.MethodGet, web.NoteListRoute, nil)
+			req := httptest.NewRequest(http.MethodGet, web.UrlPathNoteList, nil)
 			rec := httptest.NewRecorder()
 
 			e.ServeHTTP(rec, req)
