@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	UrlPathNoteList = "/notes"
+	UrlPathNote = "/notes"
 )
 
 type Router struct {
@@ -50,7 +50,7 @@ func (r *Router) SetUp() error {
 
 	v1 := group.Group("/v1")
 	v1.GET("/swagger/*", echoswagger.WrapHandler)
-	v1.GET(UrlPathNoteList, r.handler.ListNotes)
+	v1.GET(UrlPathNote, r.handler.GetNotes)
 
 	return nil
 }

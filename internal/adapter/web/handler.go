@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -16,17 +17,17 @@ func NewHandler(noteApp NoteApp) *Handler {
 	}
 }
 
-// ListNotes
+// GetNotes
 //
 // @Summary List Notes
 // @Description Get a list of all notes
 // @Tags v1
 // @Accept json
 // @Produce json
-// @Success 200 {object} ListNoteResponse
+// @Success 200 {object} GetNotesResponse
 // @Failure 500 {object} ErrResponse
 // @Router /v1/notes [GET]
-func (h *Handler) ListNotes(c echo.Context) error {
+func (h *Handler) GetNotes(c echo.Context) error {
 	notes, err := h.noteApp.List(c.Request().Context())
 	if err != nil {
 		return c.JSON(
@@ -46,9 +47,13 @@ func (h *Handler) ListNotes(c echo.Context) error {
 
 	return c.JSON(
 		http.StatusOK,
-		ListNoteResponse{
+		GetNotesResponse{
 			Message: "successful",
 			Payload: payload,
 		},
 	)
+}
+
+func (h *Handler) PostNote(c echo.Context) error {
+	return errors.New("no implementation")
 }

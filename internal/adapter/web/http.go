@@ -6,9 +6,14 @@ type ErrResponse struct {
 	Message string `json:"message"`
 }
 
-type ListNoteResponse struct {
+type GetNotesResponse struct {
 	Message string `json:"message"`
 	Payload []Note `json:"payload"`
+}
+
+type PostNoteResponse struct {
+	Message string `json:"message"`
+	Payload Note   `json:"payload"`
 }
 
 type Note struct {

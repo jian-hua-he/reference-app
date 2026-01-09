@@ -22,7 +22,7 @@ func TestHandler_List(t *testing.T) {
 		MockAppListReturnErr   error
 		MockAppListCallTimes   int
 
-		Want           web.ListNoteResponse
+		Want           web.GetNotesResponse
 		WantStatusCode int
 	}{
 		"successful list": {
@@ -41,7 +41,7 @@ func TestHandler_List(t *testing.T) {
 			MockAppListReturnErr: nil,
 			MockAppListCallTimes: 1,
 
-			Want: web.ListNoteResponse{
+			Want: web.GetNotesResponse{
 				Message: "successful",
 				Payload: []web.Note{
 					{
@@ -81,16 +81,85 @@ func TestHandler_List(t *testing.T) {
 			handler := web.NewHandler(app)
 
 			e := echo.New()
-			e.GET(web.UrlPathNoteList, handler.ListNotes)
+			e.GET(web.UrlPathNote, handler.GetNotes)
 
-			req := httptest.NewRequest(http.MethodGet, web.UrlPathNoteList, nil)
+			req := httptest.NewRequest(http.MethodGet, web.UrlPathNote, nil)
 			rec := httptest.NewRecorder()
 
 			e.ServeHTTP(rec, req)
 
 			assert.Equal(t, tc.WantStatusCode, rec.Code)
 
-			var got web.ListNoteResponse
+			var got web.GetNotesResponse
+			err := json.Unmarshal(rec.Body.Bytes(), &got)
+			require.NoError(t, err)
+			assert.ElementsMatch(t, tc.Want.Payload, got.Payload)
+		})
+	}
+}
+
+func TestHandler_Create(t *testing.T) {
+	testCases := map[string]struct {
+		MockAppCreateInput      string
+		MockAppCreateReturnNote *entity.Note
+		MockAppCreateReturnErr  error
+		MockAppCreateCallTimes  int
+
+		Want           web.PostNoteResponse
+		WantStatusCode int
+	}{
+		"successful create": {
+			MockAppCreateInput: "new note",
+			MockAppCreateReturnNote: &entity.Note{
+				ID:        "1",
+				Text:      "new note",
+				CreatedAt: time.Unix(10, 0).UTC(),
+			},
+			MockAppCreateCallTimes: 1,
+
+			Want: web.PostNoteResponse{
+				Message: "successful",
+				Payload: web.Note{
+					ID:        "1",
+					Text:      "new note",
+					CreatedAt: time.Unix(10, 0).UTC(),
+				},
+			},
+			WantStatusCode: http.StatusOK,
+		},
+		"app error": {
+			MockAppCreateInput:     "new note",
+			MockAppCreateReturnErr: assert.AnError,
+			MockAppCreateCallTimes: 1,
+
+			WantStatusCode: http.StatusInternalServerError,
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			app := web.NewMockNoteApp(ctrl)
+			app.EXPECT().
+				Create(gomock.Any(), tc.MockAppCreateInput).
+				Return(tc.MockAppCreateReturnNote, tc.MockAppCreateReturnErr).
+				Times(tc.MockAppCreateCallTimes)
+
+			handler := web.NewHandler(app)
+
+			e := echo.New()
+			e.POST(web.UrlPathNote, handler.PostNote)
+
+			req := httptest.NewRequest(http.MethodGet, web.UrlPathNote, nil)
+			rec := httptest.NewRecorder()
+
+			e.ServeHTTP(rec, req)
+
+			assert.Equal(t, tc.WantStatusCode, rec.Code)
+
+			var got web.PostNoteResponse
 			err := json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
 			assert.ElementsMatch(t, tc.Want.Payload, got.Payload)
