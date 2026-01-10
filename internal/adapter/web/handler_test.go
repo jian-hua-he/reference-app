@@ -243,7 +243,7 @@ func TestHandler_Delete(t *testing.T) {
 			e.DELETE(web.UrlPathNoteWithID, handler.DeleteNote)
 
 			path := fmt.Sprintf("%s/%s", web.UrlPathNote, tc.Input)
-			req := httptest.NewRequest(http.MethodPost, path, nil)
+			req := httptest.NewRequest(http.MethodDelete, path, nil)
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 
