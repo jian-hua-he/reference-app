@@ -1,3 +1,4 @@
+basePath: /app
 definitions:
   handler.DeleteNoteResponse:
     properties:
@@ -36,6 +37,9 @@ definitions:
     type: object
 info:
   contact: {}
+  description: This is a sample server for a App application.
+  title: App API
+  version: "1.0"
 paths:
   /v1/notes:
     get:

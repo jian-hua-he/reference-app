@@ -1,8 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is a sample server for a App application.",
+        "title": "App API",
+        "contact": {},
+        "version": "1.0"
     },
+    "basePath": "/app",
     "paths": {
         "/v1/notes": {
             "get": {

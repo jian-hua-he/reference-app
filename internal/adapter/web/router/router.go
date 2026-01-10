@@ -32,6 +32,12 @@ func NewRouter(httpPort int, h *handler.Handler, e *echo.Echo) *Router {
 	}
 }
 
+// Setup
+//
+// @Title App API
+// @Version 1.0
+// @Description This is a sample server for a App application.
+// @BasePath /app
 func (r *Router) SetUp() error {
 	r.echo.HideBanner = true
 
