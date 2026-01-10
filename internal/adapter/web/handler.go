@@ -1,7 +1,6 @@
 package web
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -114,5 +113,22 @@ func (h *Handler) PostNote(c echo.Context) error {
 // @Failure 500 {object} DeleteNoteResponse
 // @Router /v1/notes/{note_id} [DELETE]
 func (h *Handler) DeleteNote(c echo.Context) error {
-	return errors.New("no implemetation")
+	noteID := c.Param("note_id")
+
+	err := h.noteApp.Delete(c.Request().Context(), noteID)
+	if err != nil {
+		return c.JSON(
+			http.StatusInternalServerError,
+			DeleteNoteResponse{
+				Message: "failed to delete note",
+			},
+		)
+	}
+
+	return c.JSON(
+		http.StatusOK,
+		DeleteNoteResponse{
+			Message: "successful",
+		},
+	)
 }
