@@ -3,7 +3,6 @@ BIN := $(CURDIR)/bin
 MOCKGEN_VERSION := v0.6.0
 
 SWAGGER_VERSION := v1.16.2
-SWAGGER_FILE := internal/adapter/web/router.go
 
 bin/mockgen:
 	@echo "Installing mockgen $(MOCKGEN_VERSION) to $(BIN)/mockgen"
@@ -19,7 +18,7 @@ bin/swag:
 
 .PHONY: swag
 swag: bin/swag
-	@PATH="$(BIN):$$PATH" swag init -g $(SWAGGER_FILE) -o internal/adapter/web/docs
+	@PATH="$(BIN):$$PATH" swag init -g router.go -d internal/adapter/web -o internal/adapter/web/docs
 
 .PHONY: test
 test:
