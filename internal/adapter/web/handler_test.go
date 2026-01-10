@@ -3,6 +3,7 @@ package web_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -183,6 +184,75 @@ func TestHandler_Create(t *testing.T) {
 
 			var got web.PostNoteResponse
 			err = json.Unmarshal(rec.Body.Bytes(), &got)
+			require.NoError(t, err)
+			assert.EqualValues(t, tc.Want, got)
+		})
+	}
+}
+
+func TestHandler_Delete(t *testing.T) {
+	testCases := map[string]struct {
+		Input string
+
+		MockAppDeleteInput     string
+		MockAppDeleteReturnErr error
+		MockAppDeleteCallTimes int
+
+		Want           web.DeleteNoteResponse
+		WantStatusCode int
+	}{
+		"successful delete": {
+			Input: "1",
+
+			MockAppDeleteInput:     "1",
+			MockAppDeleteCallTimes: 1,
+
+			Want: web.DeleteNoteResponse{
+				Message: "successful",
+			},
+			WantStatusCode: http.StatusOK,
+		},
+		"app error": {
+			Input: "2",
+
+			MockAppDeleteInput:     "2",
+			MockAppDeleteReturnErr: assert.AnError,
+			MockAppDeleteCallTimes: 1,
+
+			Want: web.DeleteNoteResponse{
+				Message: "failed to delete note",
+			},
+			WantStatusCode: http.StatusInternalServerError,
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			app := web.NewMockNoteApp(ctrl)
+			app.EXPECT().
+				Delete(gomock.Any(), tc.MockAppDeleteInput).
+				Return(tc.MockAppDeleteReturnErr).
+				Times(tc.MockAppDeleteCallTimes)
+
+			handler := web.NewHandler(app)
+
+			e := echo.New()
+			e.DELETE(web.UrlPathNoteWithID, handler.DeleteNote)
+
+			path := fmt.Sprintf("%s/%s", web.UrlPathNote, tc.Input)
+			req := httptest.NewRequest(http.MethodPost, path, nil)
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+			rec := httptest.NewRecorder()
+
+			e.ServeHTTP(rec, req)
+
+			assert.Equal(t, tc.WantStatusCode, rec.Code)
+
+			var got web.DeleteNoteResponse
+			err := json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
 			assert.EqualValues(t, tc.Want, got)
 		})

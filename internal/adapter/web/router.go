@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	UrlPathNote = "/notes"
+	UrlPathNote       = "/notes"
+	UrlPathNoteWithID = "/notes/:note_id"
 )
 
 type Router struct {

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -99,4 +100,19 @@ func (h *Handler) PostNote(c echo.Context) error {
 			},
 		},
 	)
+}
+
+// DeleteNote
+//
+// @Summary Delete Note
+// @Description Delete a note by ID
+// @Tags v1
+// @Accept json
+// @Produce json
+// @Param note_id path string true "Note ID"
+// @Success 200 {object} DeleteNoteResponse
+// @Failure 500 {object} DeleteNoteResponse
+// @Router /v1/notes/{note_id} [DELETE]
+func (h *Handler) DeleteNote(c echo.Context) error {
+	return errors.New("no implemetation")
 }

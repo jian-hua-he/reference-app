@@ -8,10 +8,6 @@ type Note struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type ErrResponse struct {
-	Message string `json:"message"`
-}
-
 type (
 	PostNoteRequest struct {
 		Text string `json:"text"`
@@ -26,4 +22,8 @@ type (
 type GetNotesResponse struct {
 	Message string `json:"message"`
 	Payload []Note `json:"payload"`
+}
+
+type DeleteNoteResponse struct {
+	Message string `json:"message"`
 }
