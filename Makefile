@@ -18,7 +18,7 @@ bin/swag:
 
 .PHONY: swag
 swag: bin/swag
-	@PATH="$(BIN):$$PATH" swag init -g router.go -d internal/adapter/web -o internal/adapter/web/docs
+	@PATH="$(BIN):$$PATH" swag init -d internal/adapter/web -g router/router.go -o internal/adapter/web/docs
 
 .PHONY: test
 test:

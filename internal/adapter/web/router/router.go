@@ -1,4 +1,4 @@
-package web
+package router
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	_ "github.com/jian-hua-he/ddd_notes/internal/adapter/web/docs"
+	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -19,24 +20,18 @@ const (
 
 type Router struct {
 	httpPort int
-	handler  *Handler
+	handler  *handler.Handler
 	echo     *echo.Echo
 }
 
-func NewRouter(httpPort int, handler *Handler, e *echo.Echo) *Router {
+func NewRouter(httpPort int, h *handler.Handler, e *echo.Echo) *Router {
 	return &Router{
 		httpPort: httpPort,
-		handler:  handler,
+		handler:  h,
 		echo:     e,
 	}
 }
 
-// Setup
-//
-// @Title App API
-// @Version 1.0
-// @Description This is a sample server for a App application.
-// @BasePath /app
 func (r *Router) SetUp() error {
 	r.echo.HideBanner = true
 
@@ -50,6 +45,7 @@ func (r *Router) SetUp() error {
 	group := r.echo.Group("app")
 
 	v1 := group.Group("/v1")
+
 	v1.GET("/swagger/*", echoswagger.WrapHandler)
 	v1.GET(UrlPathNote, r.handler.GetNotes)
 	v1.POST(UrlPathNote, r.handler.PostNote)

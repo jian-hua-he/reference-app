@@ -1,5 +1,5 @@
-//go:generate mockgen -source=dependency.go -destination=dependency_mock.go -package=web
-package web
+//go:generate mockgen -source=dependency.go -destination=dependency_mock.go -package=handler
+package handler
 
 import (
 	"context"

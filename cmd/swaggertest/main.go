@@ -5,7 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web"
+	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
+	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/router"
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -19,8 +20,8 @@ func main() {
 	app := NewFakeApp()
 	port := 8082
 	e := echo.New()
-	h := web.NewHandler(app)
-	r := web.NewRouter(port, h, e)
+	h := handler.NewHandler(app)
+	r := router.NewRouter(port, h, e)
 
 	if err := r.SetUp(); err != nil {
 		log.Ctx(ctx).Error().Err(err).Msg("failed to set up router")

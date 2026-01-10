@@ -32,13 +32,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.GetNotesResponse"
+                            "$ref": "#/definitions/handler.GetNotesResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.GetNotesResponse"
+                            "$ref": "#/definitions/handler.GetNotesResponse"
                         }
                     }
                 }
@@ -62,7 +62,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteRequest"
+                            "$ref": "#/definitions/handler.PostNoteRequest"
                         }
                     }
                 ],
@@ -70,19 +70,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     }
                 }
@@ -114,13 +114,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.DeleteNoteResponse"
+                            "$ref": "#/definitions/handler.DeleteNoteResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.DeleteNoteResponse"
+                            "$ref": "#/definitions/handler.DeleteNoteResponse"
                         }
                     }
                 }
@@ -128,7 +128,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "web.DeleteNoteResponse": {
+        "handler.DeleteNoteResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -136,7 +136,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.GetNotesResponse": {
+        "handler.GetNotesResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -145,12 +145,12 @@ const docTemplate = `{
                 "payload": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/web.Note"
+                        "$ref": "#/definitions/handler.Note"
                     }
                 }
             }
         },
-        "web.Note": {
+        "handler.Note": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -164,7 +164,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.PostNoteRequest": {
+        "handler.PostNoteRequest": {
             "type": "object",
             "properties": {
                 "text": {
@@ -172,14 +172,14 @@ const docTemplate = `{
                 }
             }
         },
-        "web.PostNoteResponse": {
+        "handler.PostNoteResponse": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string"
                 },
                 "payload": {
-                    "$ref": "#/definitions/web.Note"
+                    "$ref": "#/definitions/handler.Note"
                 }
             }
         }
@@ -188,12 +188,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "",
 	Host:             "",
-	BasePath:         "/app",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "App API",
-	Description:      "This is a sample server for a App application.",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

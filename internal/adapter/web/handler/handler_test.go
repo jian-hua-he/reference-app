@@ -1,4 +1,4 @@
-package web_test
+package handler_test
 
 import (
 	"bytes"
@@ -9,7 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web"
+	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
+	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/router"
 	"github.com/jian-hua-he/ddd_notes/internal/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,7 +25,7 @@ func TestHandler_List(t *testing.T) {
 		MockAppListReturnErr   error
 		MockAppListCallTimes   int
 
-		Want           web.GetNotesResponse
+		Want           handler.GetNotesResponse
 		WantStatusCode int
 	}{
 		"successful list": {
@@ -43,9 +44,9 @@ func TestHandler_List(t *testing.T) {
 			MockAppListReturnErr: nil,
 			MockAppListCallTimes: 1,
 
-			Want: web.GetNotesResponse{
+			Want: handler.GetNotesResponse{
 				Message: "successful",
-				Payload: []web.Note{
+				Payload: []handler.Note{
 					{
 						ID:        "1",
 						Text:      "note 1",
@@ -65,7 +66,7 @@ func TestHandler_List(t *testing.T) {
 			MockAppListReturnErr:   assert.AnError,
 			MockAppListCallTimes:   1,
 
-			Want: web.GetNotesResponse{
+			Want: handler.GetNotesResponse{
 				Message: "failed to list notes",
 			},
 			WantStatusCode: http.StatusInternalServerError,
@@ -77,25 +78,25 @@ func TestHandler_List(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := web.NewMockNoteApp(ctrl)
+			app := handler.NewMockNoteApp(ctrl)
 			app.EXPECT().
 				List(gomock.Any()).
 				Return(tc.MockAppListReturnNotes, tc.MockAppListReturnErr).
 				Times(tc.MockAppListCallTimes)
 
-			handler := web.NewHandler(app)
+			h := handler.NewHandler(app)
 
 			e := echo.New()
-			e.GET(web.UrlPathNote, handler.GetNotes)
+			e.GET(router.UrlPathNote, h.GetNotes)
 
-			req := httptest.NewRequest(http.MethodGet, web.UrlPathNote, nil)
+			req := httptest.NewRequest(http.MethodGet, router.UrlPathNote, nil)
 			rec := httptest.NewRecorder()
 
 			e.ServeHTTP(rec, req)
 
 			assert.Equal(t, tc.WantStatusCode, rec.Code)
 
-			var got web.GetNotesResponse
+			var got handler.GetNotesResponse
 			err := json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
 			assert.Equal(t, tc.Want.Message, got.Message)
@@ -106,18 +107,18 @@ func TestHandler_List(t *testing.T) {
 
 func TestHandler_Create(t *testing.T) {
 	testCases := map[string]struct {
-		Input web.PostNoteRequest
+		Input handler.PostNoteRequest
 
 		MockAppCreateInput      string
 		MockAppCreateReturnNote *entity.Note
 		MockAppCreateReturnErr  error
 		MockAppCreateCallTimes  int
 
-		Want           web.PostNoteResponse
+		Want           handler.PostNoteResponse
 		WantStatusCode int
 	}{
 		"successful create": {
-			Input: web.PostNoteRequest{
+			Input: handler.PostNoteRequest{
 				Text: "new note",
 			},
 
@@ -129,9 +130,9 @@ func TestHandler_Create(t *testing.T) {
 			},
 			MockAppCreateCallTimes: 1,
 
-			Want: web.PostNoteResponse{
+			Want: handler.PostNoteResponse{
 				Message: "successful",
-				Payload: &web.Note{
+				Payload: &handler.Note{
 					ID:        "1",
 					Text:      "new note",
 					CreatedAt: time.Unix(10, 0).UTC(),
@@ -140,7 +141,7 @@ func TestHandler_Create(t *testing.T) {
 			WantStatusCode: http.StatusOK,
 		},
 		"app error": {
-			Input: web.PostNoteRequest{
+			Input: handler.PostNoteRequest{
 				Text: "new note",
 			},
 
@@ -148,7 +149,7 @@ func TestHandler_Create(t *testing.T) {
 			MockAppCreateReturnErr: assert.AnError,
 			MockAppCreateCallTimes: 1,
 
-			Want: web.PostNoteResponse{
+			Want: handler.PostNoteResponse{
 				Message: "failed to create note",
 			},
 			WantStatusCode: http.StatusInternalServerError,
@@ -160,21 +161,21 @@ func TestHandler_Create(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := web.NewMockNoteApp(ctrl)
+			app := handler.NewMockNoteApp(ctrl)
 			app.EXPECT().
 				Create(gomock.Any(), tc.MockAppCreateInput).
 				Return(tc.MockAppCreateReturnNote, tc.MockAppCreateReturnErr).
 				Times(tc.MockAppCreateCallTimes)
 
-			handler := web.NewHandler(app)
+			h := handler.NewHandler(app)
 
 			e := echo.New()
-			e.POST(web.UrlPathNote, handler.PostNote)
+			e.POST(router.UrlPathNote, h.PostNote)
 
 			body, err := json.Marshal(tc.Input)
 			require.NoError(t, err)
 
-			req := httptest.NewRequest(http.MethodPost, web.UrlPathNote, bytes.NewReader(body))
+			req := httptest.NewRequest(http.MethodPost, router.UrlPathNote, bytes.NewReader(body))
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 
@@ -182,7 +183,7 @@ func TestHandler_Create(t *testing.T) {
 
 			assert.Equal(t, tc.WantStatusCode, rec.Code)
 
-			var got web.PostNoteResponse
+			var got handler.PostNoteResponse
 			err = json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
 			assert.EqualValues(t, tc.Want, got)
@@ -198,7 +199,7 @@ func TestHandler_Delete(t *testing.T) {
 		MockAppDeleteReturnErr error
 		MockAppDeleteCallTimes int
 
-		Want           web.DeleteNoteResponse
+		Want           handler.DeleteNoteResponse
 		WantStatusCode int
 	}{
 		"successful delete": {
@@ -207,7 +208,7 @@ func TestHandler_Delete(t *testing.T) {
 			MockAppDeleteInput:     "1",
 			MockAppDeleteCallTimes: 1,
 
-			Want: web.DeleteNoteResponse{
+			Want: handler.DeleteNoteResponse{
 				Message: "successful",
 			},
 			WantStatusCode: http.StatusOK,
@@ -219,7 +220,7 @@ func TestHandler_Delete(t *testing.T) {
 			MockAppDeleteReturnErr: assert.AnError,
 			MockAppDeleteCallTimes: 1,
 
-			Want: web.DeleteNoteResponse{
+			Want: handler.DeleteNoteResponse{
 				Message: "failed to delete note",
 			},
 			WantStatusCode: http.StatusInternalServerError,
@@ -231,18 +232,18 @@ func TestHandler_Delete(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := web.NewMockNoteApp(ctrl)
+			app := handler.NewMockNoteApp(ctrl)
 			app.EXPECT().
 				Delete(gomock.Any(), tc.MockAppDeleteInput).
 				Return(tc.MockAppDeleteReturnErr).
 				Times(tc.MockAppDeleteCallTimes)
 
-			handler := web.NewHandler(app)
+			h := handler.NewHandler(app)
 
 			e := echo.New()
-			e.DELETE(web.UrlPathNoteWithID, handler.DeleteNote)
+			e.DELETE(router.UrlPathNoteWithID, h.DeleteNote)
 
-			path := fmt.Sprintf("%s/%s", web.UrlPathNote, tc.Input)
+			path := fmt.Sprintf("%s/%s", router.UrlPathNote, tc.Input)
 			req := httptest.NewRequest(http.MethodDelete, path, nil)
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
@@ -251,7 +252,7 @@ func TestHandler_Delete(t *testing.T) {
 
 			assert.Equal(t, tc.WantStatusCode, rec.Code)
 
-			var got web.DeleteNoteResponse
+			var got handler.DeleteNoteResponse
 			err := json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
 			assert.EqualValues(t, tc.Want, got)

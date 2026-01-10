@@ -1,20 +1,19 @@
-basePath: /app
 definitions:
-  web.DeleteNoteResponse:
+  handler.DeleteNoteResponse:
     properties:
       message:
         type: string
     type: object
-  web.GetNotesResponse:
+  handler.GetNotesResponse:
     properties:
       message:
         type: string
       payload:
         items:
-          $ref: '#/definitions/web.Note'
+          $ref: '#/definitions/handler.Note'
         type: array
     type: object
-  web.Note:
+  handler.Note:
     properties:
       created_at:
         type: string
@@ -23,23 +22,20 @@ definitions:
       text:
         type: string
     type: object
-  web.PostNoteRequest:
+  handler.PostNoteRequest:
     properties:
       text:
         type: string
     type: object
-  web.PostNoteResponse:
+  handler.PostNoteResponse:
     properties:
       message:
         type: string
       payload:
-        $ref: '#/definitions/web.Note'
+        $ref: '#/definitions/handler.Note'
     type: object
 info:
   contact: {}
-  description: This is a sample server for a App application.
-  title: App API
-  version: "1.0"
 paths:
   /v1/notes:
     get:
@@ -52,11 +48,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.GetNotesResponse'
+            $ref: '#/definitions/handler.GetNotesResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.GetNotesResponse'
+            $ref: '#/definitions/handler.GetNotesResponse'
       summary: List Notes
       tags:
       - v1
@@ -70,22 +66,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/web.PostNoteRequest'
+          $ref: '#/definitions/handler.PostNoteRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.PostNoteResponse'
+            $ref: '#/definitions/handler.PostNoteResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.PostNoteResponse'
+            $ref: '#/definitions/handler.PostNoteResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.PostNoteResponse'
+            $ref: '#/definitions/handler.PostNoteResponse'
       summary: Create Note
       tags:
       - v1
@@ -106,11 +102,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.DeleteNoteResponse'
+            $ref: '#/definitions/handler.DeleteNoteResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.DeleteNoteResponse'
+            $ref: '#/definitions/handler.DeleteNoteResponse'
       summary: Delete Note
       tags:
       - v1

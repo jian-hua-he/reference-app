@@ -1,12 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server for a App application.",
-        "title": "App API",
-        "contact": {},
-        "version": "1.0"
+        "contact": {}
     },
-    "basePath": "/app",
     "paths": {
         "/v1/notes": {
             "get": {
@@ -25,13 +21,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.GetNotesResponse"
+                            "$ref": "#/definitions/handler.GetNotesResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.GetNotesResponse"
+                            "$ref": "#/definitions/handler.GetNotesResponse"
                         }
                     }
                 }
@@ -55,7 +51,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteRequest"
+                            "$ref": "#/definitions/handler.PostNoteRequest"
                         }
                     }
                 ],
@@ -63,19 +59,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.PostNoteResponse"
+                            "$ref": "#/definitions/handler.PostNoteResponse"
                         }
                     }
                 }
@@ -107,13 +103,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.DeleteNoteResponse"
+                            "$ref": "#/definitions/handler.DeleteNoteResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.DeleteNoteResponse"
+                            "$ref": "#/definitions/handler.DeleteNoteResponse"
                         }
                     }
                 }
@@ -121,7 +117,7 @@
         }
     },
     "definitions": {
-        "web.DeleteNoteResponse": {
+        "handler.DeleteNoteResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -129,7 +125,7 @@
                 }
             }
         },
-        "web.GetNotesResponse": {
+        "handler.GetNotesResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -138,12 +134,12 @@
                 "payload": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/web.Note"
+                        "$ref": "#/definitions/handler.Note"
                     }
                 }
             }
         },
-        "web.Note": {
+        "handler.Note": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -157,7 +153,7 @@
                 }
             }
         },
-        "web.PostNoteRequest": {
+        "handler.PostNoteRequest": {
             "type": "object",
             "properties": {
                 "text": {
@@ -165,14 +161,14 @@
                 }
             }
         },
-        "web.PostNoteResponse": {
+        "handler.PostNoteResponse": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string"
                 },
                 "payload": {
-                    "$ref": "#/definitions/web.Note"
+                    "$ref": "#/definitions/handler.Note"
                 }
             }
         }
