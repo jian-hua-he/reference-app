@@ -1,6 +1,6 @@
 basePath: /app
 definitions:
-  web.ErrResponse:
+  web.DeleteNoteResponse:
     properties:
       message:
         type: string
@@ -23,6 +23,18 @@ definitions:
       text:
         type: string
     type: object
+  web.PostNoteRequest:
+    properties:
+      text:
+        type: string
+    type: object
+  web.PostNoteResponse:
+    properties:
+      message:
+        type: string
+      payload:
+        $ref: '#/definitions/web.Note'
+    type: object
 info:
   contact: {}
   description: This is a sample server for a App application.
@@ -44,8 +56,62 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrResponse'
+            $ref: '#/definitions/web.GetNotesResponse'
       summary: List Notes
+      tags:
+      - v1
+    post:
+      consumes:
+      - application/json
+      description: Create a new note
+      parameters:
+      - description: Note text
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/web.PostNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.PostNoteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.PostNoteResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.PostNoteResponse'
+      summary: Create Note
+      tags:
+      - v1
+  /v1/notes/{note_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a note by ID
+      parameters:
+      - description: Note ID
+        in: path
+        name: note_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.DeleteNoteResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.DeleteNoteResponse'
+      summary: Delete Note
       tags:
       - v1
 swagger: "2.0"

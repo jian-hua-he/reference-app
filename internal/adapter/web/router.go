@@ -52,6 +52,8 @@ func (r *Router) SetUp() error {
 	v1 := group.Group("/v1")
 	v1.GET("/swagger/*", echoswagger.WrapHandler)
 	v1.GET(UrlPathNote, r.handler.GetNotes)
+	v1.POST(UrlPathNote, r.handler.PostNote)
+	v1.DELETE(UrlPathNoteWithID, r.handler.DeleteNote)
 
 	return nil
 }
