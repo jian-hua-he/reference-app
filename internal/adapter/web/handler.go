@@ -1,7 +1,6 @@
 package web
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -25,14 +24,16 @@ func NewHandler(noteApp NoteApp) *Handler {
 // @Accept json
 // @Produce json
 // @Success 200 {object} GetNotesResponse
-// @Failure 500 {object} ErrResponse
+// @Failure 500 {object} GetNotesResponse
 // @Router /v1/notes [GET]
 func (h *Handler) GetNotes(c echo.Context) error {
 	notes, err := h.noteApp.List(c.Request().Context())
 	if err != nil {
 		return c.JSON(
 			http.StatusInternalServerError,
-			ErrResponse{Message: "failed to list notes"},
+			GetNotesResponse{
+				Message: "failed to list notes",
+			},
 		)
 	}
 
@@ -54,6 +55,48 @@ func (h *Handler) GetNotes(c echo.Context) error {
 	)
 }
 
+// PostNote
+//
+// @Summary Create Note
+// @Description Create a new note
+// @Tags v1
+// @Accept json
+// @Produce json
+// @Param request body PostNoteRequest true "Note text"
+// @Success 200 {object} PostNoteResponse
+// @Failure 400 {object} PostNoteResponse
+// @Failure 500 {object} PostNoteResponse
+// @Router /v1/notes [POST]
 func (h *Handler) PostNote(c echo.Context) error {
-	return errors.New("no implementation")
+	var req PostNoteRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(
+			http.StatusBadRequest,
+			PostNoteResponse{
+				Message: "invalid request body",
+			},
+		)
+	}
+
+	note, err := h.noteApp.Create(c.Request().Context(), req.Text)
+	if err != nil {
+		return c.JSON(
+			http.StatusInternalServerError,
+			PostNoteResponse{
+				Message: "failed to create note",
+			},
+		)
+	}
+
+	return c.JSON(
+		http.StatusOK,
+		PostNoteResponse{
+			Message: "successful",
+			Payload: &Note{
+				ID:        note.ID,
+				Text:      note.Text,
+				CreatedAt: note.CreatedAt,
+			},
+		},
+	)
 }
