@@ -1,6 +1,7 @@
 package web_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -63,6 +64,9 @@ func TestHandler_List(t *testing.T) {
 			MockAppListReturnErr:   assert.AnError,
 			MockAppListCallTimes:   1,
 
+			Want: web.GetNotesResponse{
+				Message: "failed to list notes",
+			},
 			WantStatusCode: http.StatusInternalServerError,
 		},
 	}
@@ -93,6 +97,7 @@ func TestHandler_List(t *testing.T) {
 			var got web.GetNotesResponse
 			err := json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
+			assert.Equal(t, tc.Want.Message, got.Message)
 			assert.ElementsMatch(t, tc.Want.Payload, got.Payload)
 		})
 	}
@@ -100,6 +105,8 @@ func TestHandler_List(t *testing.T) {
 
 func TestHandler_Create(t *testing.T) {
 	testCases := map[string]struct {
+		Input web.PostNoteRequest
+
 		MockAppCreateInput      string
 		MockAppCreateReturnNote *entity.Note
 		MockAppCreateReturnErr  error
@@ -109,6 +116,10 @@ func TestHandler_Create(t *testing.T) {
 		WantStatusCode int
 	}{
 		"successful create": {
+			Input: web.PostNoteRequest{
+				Text: "new note",
+			},
+
 			MockAppCreateInput: "new note",
 			MockAppCreateReturnNote: &entity.Note{
 				ID:        "1",
@@ -119,7 +130,7 @@ func TestHandler_Create(t *testing.T) {
 
 			Want: web.PostNoteResponse{
 				Message: "successful",
-				Payload: web.Note{
+				Payload: &web.Note{
 					ID:        "1",
 					Text:      "new note",
 					CreatedAt: time.Unix(10, 0).UTC(),
@@ -128,10 +139,17 @@ func TestHandler_Create(t *testing.T) {
 			WantStatusCode: http.StatusOK,
 		},
 		"app error": {
+			Input: web.PostNoteRequest{
+				Text: "new note",
+			},
+
 			MockAppCreateInput:     "new note",
 			MockAppCreateReturnErr: assert.AnError,
 			MockAppCreateCallTimes: 1,
 
+			Want: web.PostNoteResponse{
+				Message: "failed to create note",
+			},
 			WantStatusCode: http.StatusInternalServerError,
 		},
 	}
@@ -152,7 +170,11 @@ func TestHandler_Create(t *testing.T) {
 			e := echo.New()
 			e.POST(web.UrlPathNote, handler.PostNote)
 
-			req := httptest.NewRequest(http.MethodGet, web.UrlPathNote, nil)
+			body, err := json.Marshal(tc.Input)
+			require.NoError(t, err)
+
+			req := httptest.NewRequest(http.MethodPost, web.UrlPathNote, bytes.NewReader(body))
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 
 			e.ServeHTTP(rec, req)
@@ -160,9 +182,9 @@ func TestHandler_Create(t *testing.T) {
 			assert.Equal(t, tc.WantStatusCode, rec.Code)
 
 			var got web.PostNoteResponse
-			err := json.Unmarshal(rec.Body.Bytes(), &got)
+			err = json.Unmarshal(rec.Body.Bytes(), &got)
 			require.NoError(t, err)
-			assert.ElementsMatch(t, tc.Want.Payload, got.Payload)
+			assert.EqualValues(t, tc.Want, got)
 		})
 	}
 }
