@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/entity"
-	"github.com/jian-hua-he/ddd_notes/internal/repository"
+	"github.com/jian-hua-he/reference-app/internal/entity"
+	"github.com/jian-hua-he/reference-app/internal/repository"
 )
 
 type Repo struct {

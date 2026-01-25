@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/router"
+	"github.com/jian-hua-he/reference-app/internal/adapter/web/handler"
+	"github.com/jian-hua-he/reference-app/internal/adapter/web/router"
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"

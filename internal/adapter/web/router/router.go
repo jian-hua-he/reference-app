@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	_ "github.com/jian-hua-he/ddd_notes/internal/adapter/web/docs"
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
+	_ "github.com/jian-hua-he/reference-app/internal/adapter/web/docs"
+	"github.com/jian-hua-he/reference-app/internal/adapter/web/handler"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

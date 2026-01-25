@@ -3,10 +3,10 @@ package main
 import (
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/cli"
-	"github.com/jian-hua-he/ddd_notes/internal/application/note"
-	"github.com/jian-hua-he/ddd_notes/internal/repository/note/memory"
-	"github.com/jian-hua-he/ddd_notes/pkg/uuid"
+	"github.com/jian-hua-he/reference-app/internal/adapter/cli"
+	"github.com/jian-hua-he/reference-app/internal/application/note"
+	"github.com/jian-hua-he/reference-app/internal/repository/note/memory"
+	"github.com/jian-hua-he/reference-app/pkg/uuid"
 
 	"github.com/rs/zerolog/log"
 )

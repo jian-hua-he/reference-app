@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/entity"
-	"github.com/jian-hua-he/ddd_notes/internal/repository"
-	"github.com/jian-hua-he/ddd_notes/internal/repository/note/memory"
-	"github.com/jian-hua-he/ddd_notes/internal/test"
+	"github.com/jian-hua-he/reference-app/internal/entity"
+	"github.com/jian-hua-he/reference-app/internal/repository"
+	"github.com/jian-hua-he/reference-app/internal/repository/note/memory"
+	"github.com/jian-hua-he/reference-app/internal/test"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

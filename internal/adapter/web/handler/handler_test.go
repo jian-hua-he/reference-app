@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/handler"
-	"github.com/jian-hua-he/ddd_notes/internal/adapter/web/router"
-	"github.com/jian-hua-he/ddd_notes/internal/entity"
+	"github.com/jian-hua-he/reference-app/internal/adapter/web/handler"
+	"github.com/jian-hua-he/reference-app/internal/adapter/web/router"
+	"github.com/jian-hua-he/reference-app/internal/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

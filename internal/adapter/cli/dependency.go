@@ -4,7 +4,7 @@ package cli
 import (
 	"context"
 
-	"github.com/jian-hua-he/ddd_notes/internal/entity"
+	"github.com/jian-hua-he/reference-app/internal/entity"
 )
 
 type NoteApp interface {

@@ -1,4 +1,4 @@
-module github.com/jian-hua-he/ddd_notes
+module github.com/jian-hua-he/reference-app
 
 go 1.25.1
 

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/jian-hua-he/ddd_notes/internal/application"
-	"github.com/jian-hua-he/ddd_notes/internal/entity"
-	"github.com/jian-hua-he/ddd_notes/internal/repository"
+	"github.com/jian-hua-he/reference-app/internal/application"
+	"github.com/jian-hua-he/reference-app/internal/entity"
+	"github.com/jian-hua-he/reference-app/internal/repository"
 )
 
 type NoteApp struct {
