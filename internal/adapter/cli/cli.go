@@ -1,36 +1,94 @@
 package cli
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
-func NewNoteCmd(app NoteApp) *cobra.Command {
-	noteCmd := &cobra.Command{
+func Run(app NoteApp) error {
+	fmt.Println("Type 'help' for available commands, or 'exit' to quit")
+	fmt.Println()
+
+	rootCmd := newRootCmd(app)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Print("> ")
+		if !scanner.Scan() {
+			break
+		}
+
+		input := strings.TrimSpace(scanner.Text())
+		if input == "" {
+			continue
+		}
+
+		if input == "exit" {
+			fmt.Println("Goodbye!")
+			break
+		}
+
+		args := strings.Fields(input)
+		rootCmd.SetArgs(args)
+		if err := rootCmd.Execute(); err != nil {
+			log.Error().Err(err).Msg("command execution failed")
+		}
+	}
+
+	return nil
+}
+
+func newRootCmd(app NoteApp) *cobra.Command {
+	rootCmd := &cobra.Command{
 		Use:           "note",
 		Short:         "A tiny note CLI",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("App launched, you can do following")
-			fmt.Println("- note list")
-			fmt.Println("- note create --text=\"Foo bar\"")
-			fmt.Println("- note delete")
-			fmt.Println("- note exit")
+			fmt.Println("Available commands:")
+			fmt.Println("- list: List all notes")
+			fmt.Println("- create --text=<text>: Create a new note")
+			fmt.Println("- delete --id=<id>: Delete a note")
+			fmt.Println("- help: Show this help message")
 		},
 	}
 
-	noteCmd.AddCommand(NewCreateCmd(app))
-	noteCmd.AddCommand(NewListCmd(app))
-	noteCmd.AddCommand(NewDeleteCmd(app))
-	noteCmd.AddCommand(NewExitCmd())
+	rootCmd.AddCommand(newListCmd(app))
+	rootCmd.AddCommand(newCreateCmd(app))
+	rootCmd.AddCommand(newDeleteCmd(app))
 
-	return noteCmd
+	return rootCmd
 }
 
-func NewCreateCmd(app NoteApp) *cobra.Command {
+func newListCmd(app NoteApp) *cobra.Command {
+	return &cobra.Command{
+		Use: "list",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			notes, err := app.List(cmd.Context())
+			if err != nil {
+				return fmt.Errorf("list notes failed, err %w", err)
+			}
+
+			if len(notes) == 0 {
+				fmt.Println("No notes found")
+				return nil
+			}
+
+			for _, n := range notes {
+				fmt.Printf("ID=%s, Text=%s\n", n.ID, n.Text)
+			}
+
+			return nil
+		},
+	}
+}
+
+func newCreateCmd(app NoteApp) *cobra.Command {
 	var text string
 
 	cmd := &cobra.Command{
@@ -52,14 +110,10 @@ func NewCreateCmd(app NoteApp) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&text, "text", "", "Note text")
-	if err := cmd.MarkFlagRequired("text"); err != nil {
-		fmt.Printf("failed to mark text flag as required: %v\n", err)
-	}
-
 	return cmd
 }
 
-func NewDeleteCmd(app NoteApp) *cobra.Command {
+func newDeleteCmd(app NoteApp) *cobra.Command {
 	var id string
 
 	cmd := &cobra.Command{
@@ -80,37 +134,5 @@ func NewDeleteCmd(app NoteApp) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&id, "id", "", "Note ID")
-	if err := cmd.MarkFlagRequired("id"); err != nil {
-		fmt.Printf("failed to mark id flag as required: %v\n", err)
-	}
-
 	return cmd
-}
-
-func NewListCmd(app NoteApp) *cobra.Command {
-	return &cobra.Command{
-		Use: "list",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			notes, err := app.List(cmd.Context())
-			if err != nil {
-				return fmt.Errorf("list notes failed, err %w", err)
-			}
-
-			for _, n := range notes {
-				fmt.Printf("ID=%s, Text=%s\n", n.ID, n.Text)
-			}
-
-			return nil
-		},
-	}
-}
-
-func NewExitCmd() *cobra.Command {
-	return &cobra.Command{
-		Use: "exit",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Exiting the application. Goodbye!")
-			os.Exit(1)
-		},
-	}
 }
