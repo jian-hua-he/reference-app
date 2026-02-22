@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 
 	notev1 "github.com/jian-hua-he/reference-app/proto/note/v1"
 
@@ -55,9 +56,8 @@ func (h *Handler) CreateNote(ctx context.Context, req *notev1.CreateNoteRequest)
 }
 
 func (h *Handler) DeleteNote(ctx context.Context, req *notev1.DeleteNoteRequest) (*notev1.DeleteNoteResponse, error) {
-	err := h.noteApp.Delete(ctx, req.GetId())
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete note: %v", err)
+	if err := h.noteApp.Delete(ctx, req.GetId()); err != nil {
+		return nil, errors.Join(err, status.Error(codes.Internal, "failed to delete note"))
 	}
 
 	return &notev1.DeleteNoteResponse{}, nil

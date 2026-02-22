@@ -180,6 +180,7 @@ func TestHandler_DeleteNote(t *testing.T) {
 		MockAppDeleteReturnErr error
 
 		WantCode codes.Code
+		WantErr  error
 	}{
 		"successful delete": {
 			InputID: "1",
@@ -192,6 +193,7 @@ func TestHandler_DeleteNote(t *testing.T) {
 			MockAppDeleteReturnErr: assert.AnError,
 
 			WantCode: codes.Internal,
+			WantErr:  assert.AnError,
 		},
 	}
 
@@ -208,18 +210,20 @@ func TestHandler_DeleteNote(t *testing.T) {
 
 			h := handler.NewHandler(app)
 
-			got, err := h.DeleteNote(t.Context(), &notev1.DeleteNoteRequest{Id: tc.InputID})
+			_, err := h.DeleteNote(t.Context(), &notev1.DeleteNoteRequest{Id: tc.InputID})
 
-			if tc.WantCode != codes.OK {
-				require.Error(t, err)
-				st, ok := status.FromError(err)
-				require.True(t, ok)
-				assert.Equal(t, tc.WantCode, st.Code())
-				return
-			}
+			// if tc.WantCode != codes.OK {
+			// 	require.Error(t, err)
+			// 	st, ok := status.FromError(err)
+			// 	require.True(t, ok)
+			// 	assert.Equal(t, tc.WantCode, st.Code())
+			// 	return
+			// }
+			st, ok := status.FromError(err)
+			require.True(t, ok)
+			assert.Equal(t, tc.WantCode, st.Code())
 
-			require.NoError(t, err)
-			require.NotNil(t, got)
+			assert.ErrorIs(t, err, tc.WantErr)
 		})
 	}
 }

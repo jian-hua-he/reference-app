@@ -9,7 +9,6 @@ import (
 	"github.com/jian-hua-he/reference-app/internal/entity"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
 
@@ -65,12 +64,7 @@ func TestHandler_ListNotes(t *testing.T) {
 
 			err := h.ListNotes(t.Context())
 
-			if tc.WantErr != nil {
-				require.ErrorIs(t, err, tc.WantErr)
-				return
-			}
-
-			require.NoError(t, err)
+			assert.ErrorIs(t, err, tc.WantErr)
 			assert.Equal(t, tc.WantOutput, buf.String())
 		})
 	}
@@ -122,12 +116,7 @@ func TestHandler_CreateNote(t *testing.T) {
 
 			err := h.CreateNote(t.Context(), tc.Input)
 
-			if tc.WantErr != nil {
-				require.ErrorIs(t, err, tc.WantErr)
-				return
-			}
-
-			require.NoError(t, err)
+			assert.ErrorIs(t, err, tc.WantErr)
 			assert.Equal(t, tc.WantOutput, buf.String())
 		})
 	}
@@ -172,12 +161,7 @@ func TestHandler_DeleteNote(t *testing.T) {
 
 			err := h.DeleteNote(t.Context(), tc.InputID)
 
-			if tc.WantErr != nil {
-				require.ErrorIs(t, err, tc.WantErr)
-				return
-			}
-
-			require.NoError(t, err)
+			assert.ErrorIs(t, err, tc.WantErr)
 			assert.Equal(t, tc.WantOutput, buf.String())
 		})
 	}

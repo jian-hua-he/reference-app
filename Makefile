@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := help
+
 BIN := $(CURDIR)/bin
 
 MOCKGEN_VERSION := v0.6.0
@@ -15,7 +17,7 @@ bin/mockgen:
 	@GOBIN="$(BIN)" go install go.uber.org/mock/mockgen@$(MOCKGEN_VERSION)
 
 .PHONY: mockgen
-mockgen: bin/mockgen
+mockgen: bin/mockgen ## Generate mocks for interfaces
 	@PATH="$(BIN):$$PATH" go generate -v ./...
 
 bin/swag:
@@ -23,7 +25,7 @@ bin/swag:
 	@GOBIN="$(BIN)" go install github.com/swaggo/swag/cmd/swag@$(SWAGGER_VERSION)
 
 .PHONY: swag
-swag: bin/swag
+swag: bin/swag ## Generate Swagger docs
 	@PATH="$(BIN):$$PATH" swag init -d internal/adapter/web -g router/router.go -o internal/adapter/web/docs
 
 bin/buf:
@@ -39,9 +41,13 @@ bin/protoc-gen-go-grpc:
 	@GOBIN="$(BIN)" go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@$(PROTOC_GEN_GO_GRPC_VERSION)
 
 .PHONY: protoc
-protoc: bin/buf bin/protoc-gen-go bin/protoc-gen-go-grpc
+protoc: bin/buf bin/protoc-gen-go bin/protoc-gen-go-grpc ## Generate gRPC code from proto files
 	@PATH="$(BIN):$$PATH" $(BIN)/buf generate
 
 .PHONY: test
-test:
+test: ## Run tests
 	@go test -cover -race ./...
+
+.PHONY: help
+help: ## Show available commands
+	@grep -E '^\S+:.*##' $(MAKEFILE_LIST) | sed 's/:.* ## / — /' | sort
