@@ -23,8 +23,8 @@ Each application service should:
 
 For each service (e.g., NoteApp):
 - `note.go` - Service struct and methods
-- `dependency.go` - Interface definitions (must match what external layers provide)
 - `note_test.go` - Comprehensive test cases
+- `dependency.go` - Interface definitions (must match what external layers provide)
 - `dependency_mock.go` - Auto-generated mocks (via mockgen)
 
 ### Naming Conventions
