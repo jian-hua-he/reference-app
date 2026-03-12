@@ -1,4 +1,4 @@
-//go:generate mockgen -source=dependency.go -destination=dependency_mock.go -package=note
+//go:generate mockgen -source=dependency.go -destination=dependency_mock_test.go -package=note_test
 package note
 
 import (

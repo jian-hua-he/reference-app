@@ -22,7 +22,7 @@ Follow this cycle for every new feature or change:
 
 - Use `go.uber.org/mock/mockgen` to generate mocks.
 - Each package declares its dependencies as interfaces in a file named `dependency.go`.
-- The `//go:generate` directive in `dependency.go` produces `dependency_mock.go` in the same package.
+- The `//go:generate` directive in `dependency.go` produces `dependency_mock_test.go` with `_test` package suffix.
 - Run `make mockgen` to regenerate all mocks after changing interfaces.
 
 ### Interfaces on the consumer side
