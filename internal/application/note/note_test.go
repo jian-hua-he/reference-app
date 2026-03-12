@@ -47,7 +47,7 @@ func TestNoteApplication_List(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := note.NewMockNoteRepository(ctrl)
+			repo := NewMockNoteRepository(ctrl)
 			svc := note.NewNoteApp(repo)
 
 			repo.EXPECT().
@@ -121,7 +121,7 @@ func TestNoteApplication_Create(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := note.NewMockNoteRepository(ctrl)
+			repo := NewMockNoteRepository(ctrl)
 			svc := note.NewNoteApp(repo)
 
 			repo.EXPECT().
@@ -174,7 +174,7 @@ func TestNoteApplication_Delete(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			repo := note.NewMockNoteRepository(ctrl)
+			repo := NewMockNoteRepository(ctrl)
 			svc := note.NewNoteApp(repo)
 
 			repo.EXPECT().

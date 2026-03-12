@@ -74,7 +74,7 @@ func TestHandler_ListNotes(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := handler.NewMockNoteApp(ctrl)
+			app := NewMockNoteApp(ctrl)
 			app.EXPECT().
 				List(gomock.Any()).
 				Return(tc.MockAppListReturnNotes, tc.MockAppListReturnErr).
@@ -146,7 +146,7 @@ func TestHandler_CreateNote(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := handler.NewMockNoteApp(ctrl)
+			app := NewMockNoteApp(ctrl)
 			app.EXPECT().
 				Create(gomock.Any(), tc.Input).
 				Return(tc.MockAppCreateReturnNote, tc.MockAppCreateReturnErr).
@@ -202,7 +202,7 @@ func TestHandler_DeleteNote(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			app := handler.NewMockNoteApp(ctrl)
+			app := NewMockNoteApp(ctrl)
 			app.EXPECT().
 				Delete(gomock.Any(), tc.InputID).
 				Return(tc.MockAppDeleteReturnErr).
