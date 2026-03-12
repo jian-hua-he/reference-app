@@ -21,18 +21,18 @@ Follow this cycle for every new feature or change:
 ### Mocking with gomock
 
 - Use `go.uber.org/mock/mockgen` to generate mocks.
-- Each package declares its dependencies as interfaces in a file named `dependency.go`.
-- The `//go:generate` directive in `dependency.go` produces `dependency_mock_test.go` with `_test` package suffix.
+- Each package declares its dependencies as interfaces in a file named `dependencies.go`.
+- The `//go:generate` directive in `dependencies.go` produces `dependencies_mock_test.go` with `_test` package suffix.
 - Run `make mockgen` to regenerate all mocks after changing interfaces.
 
 ### Interfaces on the consumer side
 
 - Define interfaces where they are consumed, not where they are implemented.
-- Place them in `dependency.go` within the consuming package.
+- Place them in `dependencies.go` within the consuming package.
 
 ### Mock file naming
 
-- Mock file: `dependency_mock_test.go`
+- Mock file: `dependencies_mock_test.go`
 - The mock file package name must always use the `_test` suffix (e.g., `package note_test`).
 
 ### Test package
