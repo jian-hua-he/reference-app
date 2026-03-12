@@ -44,6 +44,11 @@ bin/protoc-gen-go-grpc:
 protoc: bin/buf bin/protoc-gen-go bin/protoc-gen-go-grpc ## Generate gRPC code from proto files
 	@PATH="$(BIN):$$PATH" $(BIN)/buf generate
 
+.PHONY: build
+build: ## Build all binaries to bin/
+	@go build -o $(BIN)/cli ./cmd/cli
+	@go build -o $(BIN)/server ./cmd/server
+
 .PHONY: test
 test: ## Run tests
 	@go test -cover -race ./...
