@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -15,6 +14,7 @@ import (
 	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 
+	dbpostgres "github.com/jian-hua-he/reference-app/internal/adapter/database/postgres"
 	"github.com/jian-hua-he/reference-app/internal/entity"
 	"github.com/jian-hua-he/reference-app/internal/repository"
 	"github.com/jian-hua-he/reference-app/internal/repository/note/postgres"
@@ -54,10 +54,8 @@ func (s *PostgresRepoSuite) SetupSuite() {
 	connStr, err := container.ConnectionString(ctx, "sslmode=disable")
 	require.NoError(s.T(), err)
 
-	db, err := sql.Open("postgres", connStr)
+	db, err := dbpostgres.NewDBFromConnString(connStr)
 	require.NoError(s.T(), err)
-
-	require.NoError(s.T(), db.PingContext(ctx))
 
 	_, err = db.ExecContext(ctx, schemaSQL)
 	require.NoError(s.T(), err)
