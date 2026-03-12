@@ -5,11 +5,11 @@ go 1.24.7
 require (
 	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.15.0
+	github.com/lib/pq v1.11.2
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.2
-	github.com/lib/pq v1.11.2
 	github.com/testcontainers/testcontainers-go v0.35.0
 	github.com/testcontainers/testcontainers-go/modules/postgres v0.35.0
 	go.uber.org/mock v0.6.0
@@ -35,6 +35,7 @@ require (
 	github.com/docker/docker v27.1.1+incompatible // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
+	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
