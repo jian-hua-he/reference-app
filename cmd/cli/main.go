@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/jian-hua-he/reference-app/internal/application/note"
@@ -13,42 +14,61 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		printUsage()
-		os.Exit(1)
-	}
-
 	repo := memory.NewRepo(uuid.NewUUID, time.Now)
 	app := note.NewNoteApp(repo)
 
-	subcmd := os.Args[1]
+	scanner := bufio.NewScanner(os.Stdin)
 
-	var err error
-	switch subcmd {
-	case "list":
-		err = runList(app)
-	case "create":
-		err = runCreate(app, os.Args[2:])
-	case "delete":
-		err = runDelete(app, os.Args[2:])
-	default:
-		printUsage()
-		os.Exit(1)
-	}
+	fmt.Println("Note management CLI. Type 'help' for commands, 'exit' to quit.")
+	for {
+		fmt.Print("> ")
+		if !scanner.Scan() {
+			break
+		}
 
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		args := strings.Fields(scanner.Text())
+		if len(args) == 0 {
+			continue
+		}
+
+		cmd := args[0]
+
+		switch cmd {
+		case "exit", "quit":
+			fmt.Println("Bye!")
+			return
+		case "help":
+			printUsage()
+		case "list":
+			if err := runList(app); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			}
+		case "create":
+			text := strings.TrimSpace(strings.Join(args[1:], " "))
+			if err := runCreate(app, text); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			}
+		case "delete":
+			if len(args) < 2 {
+				fmt.Fprintln(os.Stderr, "Usage: delete <id>")
+				continue
+			}
+			if err := runDelete(app, args[1]); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			}
+		default:
+			fmt.Fprintf(os.Stderr, "Unknown command: %s\n", cmd)
+			printUsage()
+		}
 	}
 }
 
 func printUsage() {
-	fmt.Fprintln(os.Stderr, "Usage: notes <command>")
-	fmt.Fprintln(os.Stderr, "")
-	fmt.Fprintln(os.Stderr, "Commands:")
-	fmt.Fprintln(os.Stderr, "  list     List all notes")
-	fmt.Fprintln(os.Stderr, "  create   Create a new note")
-	fmt.Fprintln(os.Stderr, "  delete   Delete a note by ID")
+	fmt.Println("Commands:")
+	fmt.Println("  list               List all notes")
+	fmt.Println("  create <text>      Create a new note")
+	fmt.Println("  delete <id>        Delete a note by ID")
+	fmt.Println("  exit               Exit the CLI")
 }
 
 func runList(app *note.NoteApp) error {
@@ -71,18 +91,14 @@ func runList(app *note.NoteApp) error {
 	return nil
 }
 
-func runCreate(app *note.NoteApp, args []string) error {
-	fs := flag.NewFlagSet("create", flag.ExitOnError)
-	text := fs.String("text", "", "Note text (required)")
-	fs.Parse(args)
-
-	if *text == "" {
-		return fmt.Errorf("--text is required")
+func runCreate(app *note.NoteApp, text string) error {
+	if text == "" {
+		return fmt.Errorf("text is required: create <text>")
 	}
 
 	ctx := context.Background()
 
-	n, err := app.Create(ctx, *text)
+	n, err := app.Create(ctx, text)
 	if err != nil {
 		return fmt.Errorf("failed to create note: %w", err)
 	}
@@ -93,18 +109,10 @@ func runCreate(app *note.NoteApp, args []string) error {
 	return nil
 }
 
-func runDelete(app *note.NoteApp, args []string) error {
-	fs := flag.NewFlagSet("delete", flag.ExitOnError)
-	id := fs.String("id", "", "Note ID (required)")
-	fs.Parse(args)
-
-	if *id == "" {
-		return fmt.Errorf("--id is required")
-	}
-
+func runDelete(app *note.NoteApp, id string) error {
 	ctx := context.Background()
 
-	err := app.Delete(ctx, *id)
+	err := app.Delete(ctx, id)
 	if err != nil {
 		return fmt.Errorf("failed to delete note: %w", err)
 	}
