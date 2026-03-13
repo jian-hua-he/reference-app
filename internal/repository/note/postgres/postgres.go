@@ -12,65 +12,46 @@ import (
 	"github.com/jian-hua-he/reference-app/internal/repository"
 )
 
-var dialect = goqu.Dialect("postgres")
-
 const tableName = "notes"
 
 type Repo struct {
-	db *sql.DB
+	db *goqu.Database
 }
 
 func NewRepo(db *sql.DB) *Repo {
-	return &Repo{db: db}
+	return &Repo{db: goqu.Dialect("postgres").DB(db)}
 }
 
 func (r *Repo) Create(ctx context.Context, text string) (*entity.Note, error) {
 	id := uuid.New().String()
 
-	query, args, err := dialect.
+	var note entity.Note
+	found, err := r.db.
 		Insert(tableName).
 		Cols("id", "text").
 		Vals(goqu.Vals{id, text}).
 		Returning("id", "text", "created_at").
-		ToSQL()
+		Executor().
+		ScanStructContext(ctx, &note)
 	if err != nil {
 		return nil, err
 	}
-
-	var note entity.Note
-	if err := r.db.QueryRowContext(ctx, query, args...).Scan(&note.ID, &note.Text, &note.CreatedAt); err != nil {
-		return nil, err
+	if !found {
+		return nil, repository.ErrNotFound
 	}
 
 	return &note, nil
 }
 
 func (r *Repo) List(ctx context.Context) ([]entity.Note, error) {
-	query, args, err := dialect.
+	var notes []entity.Note
+	err := r.db.
 		From(tableName).
 		Select("id", "text", "created_at").
 		Order(goqu.C("created_at").Asc()).
-		ToSQL()
+		Executor().
+		ScanStructsContext(ctx, &notes)
 	if err != nil {
-		return nil, err
-	}
-
-	rows, err := r.db.QueryContext(ctx, query, args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var notes []entity.Note
-	for rows.Next() {
-		var n entity.Note
-		if err := rows.Scan(&n.ID, &n.Text, &n.CreatedAt); err != nil {
-			return nil, err
-		}
-		notes = append(notes, n)
-	}
-
-	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
@@ -82,15 +63,11 @@ func (r *Repo) List(ctx context.Context) ([]entity.Note, error) {
 }
 
 func (r *Repo) Delete(ctx context.Context, id string) error {
-	query, args, err := dialect.
+	result, err := r.db.
 		Delete(tableName).
 		Where(goqu.C("id").Eq(id)).
-		ToSQL()
-	if err != nil {
-		return err
-	}
-
-	result, err := r.db.ExecContext(ctx, query, args...)
+		Executor().
+		ExecContext(ctx)
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,6 @@ package postgres_test
 import (
 	"context"
 	"database/sql"
-	_ "embed"
 	"testing"
 	"time"
 
@@ -15,13 +14,11 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 
 	dbpostgres "github.com/jian-hua-he/reference-app/internal/adapter/database/postgres"
+	"github.com/jian-hua-he/reference-app/internal/adapter/database/postgres/migration"
 	"github.com/jian-hua-he/reference-app/internal/entity"
 	"github.com/jian-hua-he/reference-app/internal/repository"
 	"github.com/jian-hua-he/reference-app/internal/repository/note/postgres"
 )
-
-//go:embed testdata/schema.sql
-var schemaSQL string
 
 type PostgresRepoSuite struct {
 	suite.Suite
@@ -57,7 +54,7 @@ func (s *PostgresRepoSuite) SetupSuite() {
 	db, err := dbpostgres.NewDBFromConnString(connStr)
 	require.NoError(s.T(), err)
 
-	_, err = db.ExecContext(ctx, schemaSQL)
+	err = migration.Up(db)
 	require.NoError(s.T(), err)
 
 	s.db = db

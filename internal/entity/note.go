@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Note struct {
-	ID        string
-	Text      string
-	CreatedAt time.Time
+	ID        string    `db:"id"`
+	Text      string    `db:"text"`
+	CreatedAt time.Time `db:"created_at"`
 }
