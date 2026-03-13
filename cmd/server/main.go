@@ -13,7 +13,7 @@ import (
 	"github.com/jian-hua-he/reference-app/internal/adapter/web/router"
 	"github.com/jian-hua-he/reference-app/internal/application/note"
 	"github.com/jian-hua-he/reference-app/internal/config"
-	notepostgres "github.com/jian-hua-he/reference-app/internal/repository/note/postgres"
+	notepostgres "github.com/jian-hua-he/reference-app/internal/adapter/repository/note/postgres"
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"

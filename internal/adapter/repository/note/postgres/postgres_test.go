@@ -16,8 +16,8 @@ import (
 	dbpostgres "github.com/jian-hua-he/reference-app/internal/adapter/database/postgres"
 	"github.com/jian-hua-he/reference-app/internal/adapter/database/postgres/migration"
 	"github.com/jian-hua-he/reference-app/internal/entity"
-	"github.com/jian-hua-he/reference-app/internal/repository"
-	"github.com/jian-hua-he/reference-app/internal/repository/note/postgres"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository/note/postgres"
 )
 
 type PostgresRepoSuite struct {

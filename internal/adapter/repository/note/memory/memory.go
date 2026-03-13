@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/jian-hua-he/reference-app/internal/entity"
-	"github.com/jian-hua-he/reference-app/internal/repository"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository"
 )
 
 type Repo struct {

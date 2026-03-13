@@ -7,7 +7,7 @@ import (
 
 	"github.com/jian-hua-he/reference-app/internal/application"
 	"github.com/jian-hua-he/reference-app/internal/entity"
-	"github.com/jian-hua-he/reference-app/internal/repository"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository"
 )
 
 type NoteApp struct {

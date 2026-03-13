@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/jian-hua-he/reference-app/internal/application/note"
-	"github.com/jian-hua-he/reference-app/internal/repository/note/memory"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository/note/memory"
 	"github.com/jian-hua-he/reference-app/pkg/uuid"
 )
 

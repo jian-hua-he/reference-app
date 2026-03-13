@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/jian-hua-he/reference-app/internal/entity"
-	"github.com/jian-hua-he/reference-app/internal/repository"
-	"github.com/jian-hua-he/reference-app/internal/repository/note/memory"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository"
+	"github.com/jian-hua-he/reference-app/internal/adapter/repository/note/memory"
 	"github.com/jian-hua-he/reference-app/internal/test"
 
 	"github.com/stretchr/testify/assert"
