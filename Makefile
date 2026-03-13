@@ -53,6 +53,24 @@ build: ## Build all binaries to bin/
 test: ## Run tests
 	@go test -cover -race ./...
 
+COMPOSE := docker compose -f env/docker-compose.yml
+
+.PHONY: server-up
+server-up: ## Start server with postgres in docker
+	@$(COMPOSE) up -d --build
+	@echo ""
+	@echo "HTTP server: http://localhost:8082/app/v1/notes"
+	@echo "Swagger UI:  http://localhost:8082/app/v1/swagger/index.html"
+	@echo "gRPC server: localhost:50051"
+
+.PHONY: server-down
+server-down: ## Stop server and postgres
+	@$(COMPOSE) down
+
+.PHONY: server-reset
+server-reset: ## Stop server and postgres, remove volumes
+	@$(COMPOSE) down -v
+
 .PHONY: help
 help: ## Show available commands
 	@grep -E '^\S+:.*##' $(MAKEFILE_LIST) | sed 's/:.* ## / — /' | sort

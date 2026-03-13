@@ -19,7 +19,10 @@ func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Note management CLI. Type 'help' for commands, 'exit' to quit.")
+	fmt.Println("Note management CLI")
+	fmt.Println("")
+	printUsage()
+	fmt.Println("")
 	for {
 		fmt.Print("> ")
 		if !scanner.Scan() {
