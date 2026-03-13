@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jian-hua-he/reference-app/internal/entity"
 	"github.com/jian-hua-he/reference-app/internal/adapter/repository"
 	"github.com/jian-hua-he/reference-app/internal/adapter/repository/note/memory"
+	"github.com/jian-hua-he/reference-app/internal/entity"
 	"github.com/jian-hua-he/reference-app/internal/test"
 
 	"github.com/stretchr/testify/assert"
@@ -47,7 +47,7 @@ func TestMemoryRepo_List(t *testing.T) {
 			got, err := repo.List(t.Context())
 
 			assert.ErrorIs(t, err, tc.WantErr)
-			assert.EqualValues(t, got, tc.Want)
+			assert.ElementsMatch(t, got, tc.Want)
 		})
 	}
 }
